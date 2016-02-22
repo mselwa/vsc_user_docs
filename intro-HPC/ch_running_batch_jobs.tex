@@ -68,7 +68,7 @@ Each time you want to execute a program on the \hpc you'll need 2 things:
       \item  the type of compute nodes;
       \item  the number of CPUs;
       \item  the amount of memory;
-      \item  the expected duration of the execution time (wall time: Time as mesaured by a clock on thew all);
+      \item  the expected duration of the execution time (wall time: Time as mesaured by a clock on the wall);
       \item  the name of the files which will contain the output (i.e., stdout) and error (i.e., stderr) messages;
       \item  what executable to start, and its arguments.
     \end{enumerate}
@@ -248,6 +248,7 @@ can retrieve the status of all your jobs that are submitted and are not yet
 finished using (uid is your VSC user name on the system):
 
 % Manually indented, please keep this as is
+\ifantwerpen
 \begin{prompt}
 %\shellcmd{qstat}%
 %\pbsserver%:
@@ -255,6 +256,36 @@ Job ID      Name    User      Time Use S Queue
 ----------- ------- --------- -------- - -----
 %\jobnumber%.%\dots% mpi     %\userid% 0        Q short
 \end{prompt}
+\fi
+\ifbrussel
+\begin{prompt}
+%\shellcmd{qstat}%
+%\pbsserver%:
+Job ID      Name    User      Time Use S Queue
+----------- ------- --------- -------- - -----
+%\jobnumber%.%\dots% mpi     %\userid% 0        Q short
+\end{prompt}
+\fi
+\ifgent
+\begin{prompt}
+%\shellcmd{qstat}%
+%\pbsserver%:
+Job ID      Name    User      Time Use S Queue
+----------- ------- --------- -------- - -----
+%\jobnumber%.%\dots% mpi     %\userid% 0        Q short
+\end{prompt}
+\fi
+\ifleuven
+\begin{prompt}
+%\shellcmd{qstat}%
+%\pbsserver%:
+Job ID      Name    User      Time Use S Queue
+----------- ------- --------- -------- - -----
+%\jobnumber%.%\dots% mpi     %\userid% 0        Q q1h
+\end{prompt}
+\fi
+
+
 
 Here:
 \begin{description}
@@ -405,21 +436,67 @@ The job requires no more than 4 GB of memory. \\
 The job requires 5 compute nodes with two cores on each node (ppn stands for
 ``processors per node'', where processor is used to refer to individual cores). \\
 
+\ifantwerpen
 \begin{prompt}
 %\shellcmd{qsub -l nodes=1:westmere}%
 \end{prompt}
 
 The job requires just one node, but it should have an Intel Westmere processor.
 A list with site-specific properties can be found in the next section.
+\fi
+\ifgent
+\begin{prompt}
+%\shellcmd{qsub -l nodes=1:westmere}%
+\end{prompt}
+
+The job requires just one node, but it should have an Intel Westmere processor.
+A list with site-specific properties can be found in the next section.
+\fi
+\ifbrussel
+\begin{prompt}
+%\shellcmd{qsub -l nodes=1:westmere}%
+\end{prompt}
+
+The job requires just one node, but it should have an Intel Westmere processor.
+A list with site-specific properties can be found in the next section.
+\fi
+\ifleuven
+\begin{prompt}
+%\shellcmd{qsub -l nodes=1:haswell}%
+\end{prompt}
+
+The job requires just one node, but it should have an Intel Haswell processor.
+A list with site-specific properties can be found in the next section.
+\fi
 
 These options can either be specified on the command line, e.g.
 
+\ifantwerpen
 \begin{prompt}
 %\shellcmd{qsub -l nodes=1:westmere,mem=2gb fibo.pbs}%
 \end{prompt}
+\fi
+\ifbrussel
+\begin{prompt}
+%\shellcmd{qsub -l nodes=1:westmere,mem=2gb fibo.pbs}%
+\end{prompt}
+\fi
+\ifgent
+\begin{prompt}
+%\shellcmd{qsub -l nodes=1:westmere,mem=2gb fibo.pbs}%
+\end{prompt}
+\fi
+\ifleuven
+\begin{prompt}
+%\shellcmd{qsub -l nodes=1:haswell,mem=2gb fibo.pbs}%
+\end{prompt}
+\fi
+
+
 
 or in the job-script itself using the \#PBS-directive, so ``fibo.pbs'' could be modified to:
 
+\ifantwerpen
 \begin{code}{bash}
 #!/bin/bash -l
 #PBS -l nodes=1:westmere
@@ -427,6 +504,34 @@ or in the job-script itself using the \#PBS-directive, so ``fibo.pbs'' could be 
 cd $PBS_O_WORKDIR
 ./fibo.pl
 \end{code}
+\fi
+\ifbrussel
+\begin{code}{bash}
+#!/bin/bash -l
+#PBS -l nodes=1:westmere
+#PBS -l mem=2gb
+cd $PBS_O_WORKDIR
+./fibo.pl
+\end{code}
+\fi
+\ifgent
+\begin{code}{bash}
+#!/bin/bash -l
+#PBS -l nodes=1:westmere
+#PBS -l mem=2gb
+cd $PBS_O_WORKDIR
+./fibo.pl
+\end{code}
+\fi
+\ifleuven
+\begin{code}{bash}
+#!/bin/bash -l
+#PBS -l nodes=1:haswell
+#PBS -l mem=2gb
+cd $PBS_O_WORKDIR
+./fibo.pl
+\end{code}
+\fi
 
 Note that the resources requested on the command line will override those
 specified in the PBS file.
@@ -535,6 +640,37 @@ westmere          & only use Intel processors from the Westmere family (56xx, tu
 ivybridge         & only use Intel processors from the Ivy Bridge family (26xx-v2, hopper-only) \\ \hline
 ib                & use Infiniband interconnect                                                 \\ \hline
 \end{tabular}
+\fi
+\ifleuvenpbsnodes
+
+\begin{tabular}{|p{0.7in}|p{5.3in}|} \hline
+\strong{Property} & \strong{Explanation}                                        \\ \hline
+ivybridge         & only use Intel Ivy Bridge processors (E5-2680v2) \\ \hline
+haswell           & only use Intel Haswell processors (E5-2680v3) \\ \hline
+M2070             & only use nodes with NVIDIA Tesla M2070 GPGPUs \\ \hline
+K20Xm             & only use nodes with NVIDIA Tesla K20x GPGPUs \\ \hline
+K40c              & only use nodes with NVIDIA Tesla K40 GPGPUs \\ \hline
+\end{tabular}
+
+Some specific nodes can be accessed through corresponding partition request, e.g. 
+
+\begin{prompt}
+%\shellcmd{qsub -l partition=gpu}%
+\end{prompt}
+
+allows to submit the job to the GPU nodes. Similarily, 
+
+\begin{prompt}
+%\shellcmd{qsub -l partition=phi}%
+\end{prompt}
+
+requests nodes with Intel Xeon Phi 5110P co-processors and 
+
+\begin{prompt}
+%\shellcmd{qsub -l partition=visualization}%
+\end{prompt}
+
+uses visualization nodes with NVIDIA Quadro K5200 GPUs.
 \fi
 \ifbrussel
 \begin{tabular}{|p{0.7in}|p{5.3in}|} \hline
@@ -647,6 +783,21 @@ happens:
 %\shellcmd{qsub -m abe -M $<$your e-mail address$>$ fibo.pbs}%
 \end{prompt}
 
+\ifleuven
+If you do not want to specify the e-mail address each time, 
+you can create the ``.forward`` file in your home directory
+containing your e-mail address.
+The system will use that e-mail address to send you messages.
+\fi
+\ifgent
 You don't have to specify the e-mail address. The system will
 use the e-mail address which is connected to your VSC account.
-
+\fi
+\ifantwerpen
+You don't have to specify the e-mail address. The system will
+use the e-mail address which is connected to your VSC account.
+\fi
+\ifbrussel
+You don't have to specify the e-mail address. The system will
+use the e-mail address which is connected to your VSC account.
+\fi
